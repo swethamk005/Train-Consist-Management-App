@@ -1,45 +1,73 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+class PassengerBogie {
+    private String bogieId;
+    private String bogieType;
+    private int seatCapacity;
+
+    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
+        this.bogieId = bogieId;
+        this.bogieType = bogieType;
+        this.seatCapacity = seatCapacity;
+    }
+
+    public String getBogieId() {
+        return bogieId;
+    }
+
+    public String getBogieType() {
+        return bogieType;
+    }
+
+    public int getSeatCapacity() {
+        return seatCapacity;
+    }
+
+    public void displayBogie() {
+        System.out.println("Bogie ID      : " + bogieId);
+        System.out.println("Bogie Type    : " + bogieType);
+        System.out.println("Seat Capacity : " + seatCapacity);
+    }
+}
+
+// Custom Comparator to sort bogies by seating capacity
+class CapacityComparator implements Comparator<PassengerBogie> {
+    @Override
+    public int compare(PassengerBogie b1, PassengerBogie b2) {
+        return Integer.compare(b1.getSeatCapacity(), b2.getSeatCapacity());
+    }
+}
 
 public class TrainConsistManagement {
     public static void main(String[] args) {
-        // HashMap to store bogie ID and its capacity
-        Map<String, Integer> bogieCapacityMap = new HashMap<>();
+        // Create a list of passenger bogies
+        ArrayList<PassengerBogie> bogies = new ArrayList<>();
 
-        // Adding bogies with capacities
-        System.out.println("=== ADDING BOGIES WITH CAPACITY ===");
-        addBogie(bogieCapacityMap, "BG101", 72);   // Sleeper
-        addBogie(bogieCapacityMap, "BG102", 60);   // AC Chair
-        addBogie(bogieCapacityMap, "BG103", 24);   // First Class
+        // Add passenger bogies
+        bogies.add(new PassengerBogie("BG101", "Sleeper", 72));
+        bogies.add(new PassengerBogie("BG102", "AC Chair", 56));
+        bogies.add(new PassengerBogie("BG103", "First Class", 24));
+        bogies.add(new PassengerBogie("BG104", "Second Sitting", 90));
 
-        // Display all bogie-capacity mappings
-        System.out.println("\n=== BOGIE CAPACITY DETAILS ===");
-        displayBogieCapacities(bogieCapacityMap);
+        // Display before sorting
+        System.out.println("=== PASSENGER BOGIES BEFORE SORTING ===");
+        displayBogies(bogies);
 
-        // Lookup capacity of a specific bogie
-        System.out.println("\n=== CHECKING CAPACITY OF A SPECIFIC BOGIE ===");
-        String searchId = "BG102";
-        if (bogieCapacityMap.containsKey(searchId)) {
-            System.out.println("Bogie ID " + searchId + " has capacity: " + bogieCapacityMap.get(searchId));
-        } else {
-            System.out.println("Bogie ID " + searchId + " not found.");
-        }
+        // Sort bogies using custom Comparator
+        Collections.sort(bogies, new CapacityComparator());
+
+        // Display after sorting
+        System.out.println("\n=== PASSENGER BOGIES SORTED BY SEATING CAPACITY ===");
+        displayBogies(bogies);
     }
 
-    // Method to add bogie ID and capacity
-    public static void addBogie(Map<String, Integer> bogieCapacityMap, String bogieId, int capacity) {
-        bogieCapacityMap.put(bogieId, capacity);
-        System.out.println("Bogie ID " + bogieId + " with capacity " + capacity + " added successfully.");
-    }
-
-    // Method to display all bogie-capacity mappings
-    public static void displayBogieCapacities(Map<String, Integer> bogieCapacityMap) {
-        if (bogieCapacityMap.isEmpty()) {
-            System.out.println("No bogie capacity data found.");
-        } else {
-            for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
-                System.out.println("Bogie ID: " + entry.getKey() + " | Capacity: " + entry.getValue());
-            }
+    // Method to display bogie details
+    public static void displayBogies(ArrayList<PassengerBogie> bogies) {
+        for (PassengerBogie bogie : bogies) {
+            bogie.displayBogie();
+            System.out.println("--------------------------");
         }
     }
 }
