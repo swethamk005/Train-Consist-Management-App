@@ -1,61 +1,41 @@
-import java.util.ArrayList;
-import java.util.List;
-
-class PassengerBogie {
-    private String bogieId;
-    private String bogieType;
-    private int seatCapacity;
-
-    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
-        this.bogieId = bogieId;
-        this.bogieType = bogieType;
-        this.seatCapacity = seatCapacity;
-    }
-
-    public String getBogieId() {
-        return bogieId;
-    }
-
-    public String getBogieType() {
-        return bogieType;
-    }
-
-    public int getSeatCapacity() {
-        return seatCapacity;
-    }
-
-    public void displayBogie() {
-        System.out.println("Bogie ID      : " + bogieId);
-        System.out.println("Bogie Type    : " + bogieType);
-        System.out.println("Seat Capacity : " + seatCapacity);
-    }
-}
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class TrainConsistManagement {
+
+    // Method to validate Train ID
+    public static boolean isValidTrainId(String trainId) {
+        String trainIdPattern = "^TRN-\\d{4}$";
+        Pattern pattern = Pattern.compile(trainIdPattern);
+        Matcher matcher = pattern.matcher(trainId);
+        return matcher.matches();
+    }
+
+    // Method to validate Cargo Code
+    public static boolean isValidCargoCode(String cargoCode) {
+        String cargoCodePattern = "^CG-[A-Z]{3}\\d{3}$";
+        Pattern pattern = Pattern.compile(cargoCodePattern);
+        Matcher matcher = pattern.matcher(cargoCode);
+        return matcher.matches();
+    }
+
     public static void main(String[] args) {
-        // Create a list of passenger bogies
-        List<PassengerBogie> bogies = new ArrayList<>();
+        // Sample Train IDs
+        String trainId1 = "TRN-1234";
+        String trainId2 = "TRAIN12";
 
-        // Add passenger bogies
-        bogies.add(new PassengerBogie("BG101", "Sleeper", 72));
-        bogies.add(new PassengerBogie("BG102", "AC Chair", 56));
-        bogies.add(new PassengerBogie("BG103", "First Class", 24));
-        bogies.add(new PassengerBogie("BG104", "Second Sitting", 90));
+        // Sample Cargo Codes
+        String cargoCode1 = "CG-ABC123";
+        String cargoCode2 = "CG-12AB34";
 
-        // Display all bogies
-        System.out.println("=== PASSENGER BOGIES IN TRAIN ===");
-        for (PassengerBogie bogie : bogies) {
-            bogie.displayBogie();
-            System.out.println("--------------------------");
-        }
+        // Validate Train IDs
+        System.out.println("=== TRAIN ID VALIDATION ===");
+        System.out.println(trainId1 + " -> " + (isValidTrainId(trainId1) ? "Valid" : "Invalid"));
+        System.out.println(trainId2 + " -> " + (isValidTrainId(trainId2) ? "Valid" : "Invalid"));
 
-        // Use reduce() to calculate total seating capacity
-        int totalSeats = bogies.stream()
-                .map(PassengerBogie::getSeatCapacity)
-                .reduce(0, Integer::sum);
-
-        // Display total seats
-        System.out.println("\n=== TOTAL SEATING CAPACITY ===");
-        System.out.println("Total Seats in Train: " + totalSeats);
+        // Validate Cargo Codes
+        System.out.println("\n=== CARGO CODE VALIDATION ===");
+        System.out.println(cargoCode1 + " -> " + (isValidCargoCode(cargoCode1) ? "Valid" : "Invalid"));
+        System.out.println(cargoCode2 + " -> " + (isValidCargoCode(cargoCode2) ? "Valid" : "Invalid"));
     }
 }
