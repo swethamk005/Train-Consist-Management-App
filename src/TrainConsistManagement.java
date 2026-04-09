@@ -1,17 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-class Bogie {
+class PassengerBogie {
     private String bogieId;
     private String bogieType;
-    private int capacity;
+    private int seatCapacity;
 
-    public Bogie(String bogieId, String bogieType, int capacity) {
+    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
         this.bogieId = bogieId;
         this.bogieType = bogieType;
-        this.capacity = capacity;
+        this.seatCapacity = seatCapacity;
     }
 
     public String getBogieId() {
@@ -22,43 +20,42 @@ class Bogie {
         return bogieType;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getSeatCapacity() {
+        return seatCapacity;
     }
 
     public void displayBogie() {
-        System.out.println("Bogie ID   : " + bogieId);
-        System.out.println("Bogie Type : " + bogieType);
-        System.out.println("Capacity   : " + capacity);
+        System.out.println("Bogie ID      : " + bogieId);
+        System.out.println("Bogie Type    : " + bogieType);
+        System.out.println("Seat Capacity : " + seatCapacity);
     }
 }
 
 public class TrainConsistManagement {
     public static void main(String[] args) {
-        // Create a list of bogies
-        List<Bogie> bogies = new ArrayList<>();
+        // Create a list of passenger bogies
+        List<PassengerBogie> bogies = new ArrayList<>();
 
-        // Add bogies
-        bogies.add(new Bogie("BG101", "Sleeper", 72));
-        bogies.add(new Bogie("BG102", "AC Chair", 56));
-        bogies.add(new Bogie("BG103", "First Class", 24));
-        bogies.add(new Bogie("BG104", "Sleeper", 72));
-        bogies.add(new Bogie("BG105", "AC Chair", 56));
+        // Add passenger bogies
+        bogies.add(new PassengerBogie("BG101", "Sleeper", 72));
+        bogies.add(new PassengerBogie("BG102", "AC Chair", 56));
+        bogies.add(new PassengerBogie("BG103", "First Class", 24));
+        bogies.add(new PassengerBogie("BG104", "Second Sitting", 90));
 
-        // Group bogies by type using Collectors.groupingBy()
-        Map<String, List<Bogie>> groupedBogies = bogies.stream()
-                .collect(Collectors.groupingBy(Bogie::getBogieType));
-
-        // Display grouped bogies
-        System.out.println("=== GROUPED BOGIES BY TYPE ===");
-
-        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
-            System.out.println("\nBogie Type: " + entry.getKey());
-
-            for (Bogie bogie : entry.getValue()) {
-                bogie.displayBogie();
-                System.out.println("----------------------");
-            }
+        // Display all bogies
+        System.out.println("=== PASSENGER BOGIES IN TRAIN ===");
+        for (PassengerBogie bogie : bogies) {
+            bogie.displayBogie();
+            System.out.println("--------------------------");
         }
+
+        // Use reduce() to calculate total seating capacity
+        int totalSeats = bogies.stream()
+                .map(PassengerBogie::getSeatCapacity)
+                .reduce(0, Integer::sum);
+
+        // Display total seats
+        System.out.println("\n=== TOTAL SEATING CAPACITY ===");
+        System.out.println("Total Seats in Train: " + totalSeats);
     }
 }
