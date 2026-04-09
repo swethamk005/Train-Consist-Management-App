@@ -1,41 +1,67 @@
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.List;
+
+@FunctionalInterface
+interface SafetyRule {
+    boolean isSafe(GoodsBogie bogie);
+}
+
+class GoodsBogie {
+    private String bogieId;
+    private String bogieShape;
+    private String cargoType;
+
+    public GoodsBogie(String bogieId, String bogieShape, String cargoType) {
+        this.bogieId = bogieId;
+        this.bogieShape = bogieShape;
+        this.cargoType = cargoType;
+    }
+
+    public String getBogieId() {
+        return bogieId;
+    }
+
+    public String getBogieShape() {
+        return bogieShape;
+    }
+
+    public String getCargoType() {
+        return cargoType;
+    }
+
+    public void displayBogie() {
+        System.out.println("Bogie ID    : " + bogieId);
+        System.out.println("Bogie Shape : " + bogieShape);
+        System.out.println("Cargo Type  : " + cargoType);
+    }
+}
 
 public class TrainConsistManagement {
-
-    // Method to validate Train ID
-    public static boolean isValidTrainId(String trainId) {
-        String trainIdPattern = "^TRN-\\d{4}$";
-        Pattern pattern = Pattern.compile(trainIdPattern);
-        Matcher matcher = pattern.matcher(trainId);
-        return matcher.matches();
-    }
-
-    // Method to validate Cargo Code
-    public static boolean isValidCargoCode(String cargoCode) {
-        String cargoCodePattern = "^CG-[A-Z]{3}\\d{3}$";
-        Pattern pattern = Pattern.compile(cargoCodePattern);
-        Matcher matcher = pattern.matcher(cargoCode);
-        return matcher.matches();
-    }
-
     public static void main(String[] args) {
-        // Sample Train IDs
-        String trainId1 = "TRN-1234";
-        String trainId2 = "TRAIN12";
+        // Create a list of goods bogies
+        List<GoodsBogie> goodsBogies = new ArrayList<>();
 
-        // Sample Cargo Codes
-        String cargoCode1 = "CG-ABC123";
-        String cargoCode2 = "CG-12AB34";
+        // Add goods bogies
+        goodsBogies.add(new GoodsBogie("GB101", "Cylindrical", "Petroleum"));
+        goodsBogies.add(new GoodsBogie("GB102", "Rectangular", "Coal"));
+        goodsBogies.add(new GoodsBogie("GB103", "Cylindrical", "Coal"));      // Unsafe
+        goodsBogies.add(new GoodsBogie("GB104", "Rectangular", "Cement"));
 
-        // Validate Train IDs
-        System.out.println("=== TRAIN ID VALIDATION ===");
-        System.out.println(trainId1 + " -> " + (isValidTrainId(trainId1) ? "Valid" : "Invalid"));
-        System.out.println(trainId2 + " -> " + (isValidTrainId(trainId2) ? "Valid" : "Invalid"));
+        // Functional interface implemented using lambda expression
+        SafetyRule safetyCheck = bogie -> {
+            if (bogie.getBogieShape().equalsIgnoreCase("Cylindrical")) {
+                return bogie.getCargoType().equalsIgnoreCase("Petroleum");
+            }
+            return true; // Rectangular bogies are safe for general cargo
+        };
 
-        // Validate Cargo Codes
-        System.out.println("\n=== CARGO CODE VALIDATION ===");
-        System.out.println(cargoCode1 + " -> " + (isValidCargoCode(cargoCode1) ? "Valid" : "Invalid"));
-        System.out.println(cargoCode2 + " -> " + (isValidCargoCode(cargoCode2) ? "Valid" : "Invalid"));
+        // Display safety compliance results
+        System.out.println("=== GOODS BOGIE SAFETY COMPLIANCE CHECK ===");
+
+        goodsBogies.stream().forEach(bogie -> {
+            bogie.displayBogie();
+            System.out.println("Safety Status: " + (safetyCheck.isSafe(bogie) ? "SAFE" : "UNSAFE"));
+            System.out.println("--------------------------");
+        });
     }
 }
