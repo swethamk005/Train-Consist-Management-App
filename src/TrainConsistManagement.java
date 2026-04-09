@@ -1,29 +1,29 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class TrainConsistManagement {
     public static void main(String[] args) {
-        // HashSet to store unique bogie IDs
-        Set<String> bogieIds = new HashSet<>();
+        // TreeSet stores unique bogie IDs in sorted order
+        SortedSet<String> bogieIds = new TreeSet<>();
 
         // Adding bogie IDs
         System.out.println("=== ADDING BOGIE IDS ===");
-
+        addBogieId(bogieIds, "BG105");
         addBogieId(bogieIds, "BG101");
-        addBogieId(bogieIds, "BG102");
         addBogieId(bogieIds, "BG103");
+        addBogieId(bogieIds, "BG102");
 
-        // Attempting to add a duplicate bogie ID
+        // Attempting to add duplicate bogie ID
         System.out.println("\n=== ADDING DUPLICATE BOGIE ID ===");
         addBogieId(bogieIds, "BG101");
 
-        // Display final unique bogie IDs
-        System.out.println("\n=== UNIQUE BOGIE IDS IN TRAIN ===");
+        // Display sorted unique bogie IDs
+        System.out.println("\n=== SORTED UNIQUE BOGIE IDS IN TRAIN ===");
         displayBogieIds(bogieIds);
     }
 
     // Method to add bogie ID only if it is unique
-    public static void addBogieId(Set<String> bogieIds, String bogieId) {
+    public static void addBogieId(SortedSet<String> bogieIds, String bogieId) {
         if (bogieIds.add(bogieId)) {
             System.out.println("Bogie ID " + bogieId + " added successfully.");
         } else {
@@ -31,8 +31,8 @@ public class TrainConsistManagement {
         }
     }
 
-    // Method to display all unique bogie IDs
-    public static void displayBogieIds(Set<String> bogieIds) {
+    // Method to display all bogie IDs in sorted order
+    public static void displayBogieIds(SortedSet<String> bogieIds) {
         if (bogieIds.isEmpty()) {
             System.out.println("No bogie IDs found.");
         } else {
