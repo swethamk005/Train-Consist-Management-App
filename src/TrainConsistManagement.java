@@ -1,49 +1,124 @@
+import java.util.ArrayList;
 
-    class Engine {
-        private String engineId;
-        private String engineType;
-        // Constructor to initialize engine details
-        public Engine(String engineId, String engineType) {
-            this.engineId = engineId;
-            this.engineType = engineType;
-        }
-        // Method to return formatted engine details
-        public String getEngineInfo() {
-            return engineId + " (" + engineType + ")";
+class PassengerBogie {
+    private String bogieId;
+    private String bogieType;
+    private int seatCapacity;
+
+    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
+        this.bogieId = bogieId;
+        this.bogieType = bogieType;
+        this.seatCapacity = seatCapacity;
+    }
+
+    public String getBogieId() {
+        return bogieId;
+    }
+
+    public String getBogieType() {
+        return bogieType;
+    }
+
+    public int getSeatCapacity() {
+        return seatCapacity;
+    }
+
+    public void displayBogie() {
+        System.out.println("Bogie ID      : " + bogieId);
+        System.out.println("Bogie Type    : " + bogieType);
+        System.out.println("Seat Capacity : " + seatCapacity);
+    }
+}
+
+class Train {
+    private ArrayList<PassengerBogie> passengerBogies;
+
+    public Train() {
+        passengerBogies = new ArrayList<>();
+    }
+
+    // Add passenger bogie
+    public void addPassengerBogie(PassengerBogie bogie) {
+        if (checkBogieExists(bogie.getBogieId())) {
+            System.out.println("Bogie with ID " + bogie.getBogieId() + " already exists.");
+        } else {
+            passengerBogies.add(bogie);
+            System.out.println("Passenger bogie " + bogie.getBogieId() + " added successfully.");
         }
     }
-    class Train {
-        private String trainId;
-        private Engine engine;
-        private int bogieCount;
-        // Constructor to initialize train details
-        public Train(String trainId, Engine engine) {
-            this.trainId = trainId;
-            this.engine = engine;
-            this.bogieCount = 0; // Initially no bogies attached
+
+    // Remove passenger bogie by ID
+    public void removePassengerBogie(String bogieId) {
+        for (int i = 0; i < passengerBogies.size(); i++) {
+            if (passengerBogies.get(i).getBogieId().equalsIgnoreCase(bogieId)) {
+                passengerBogies.remove(i);
+                System.out.println("Passenger bogie " + bogieId + " removed successfully.");
+                return;
+            }
         }
-        // Method to display the initial train consist summary
-        public void displayConsistSummary() {
-            System.out.println("===== TRAIN CONSIST MANAGEMENT APP =====");
-            System.out.println("Train ID        : " + trainId);
-            System.out.println("Engine          : " + engine.getEngineInfo());
-            System.out.println("Bogies Attached : " + bogieCount);
-            System.out.println("Passenger Seats : 0");
-            System.out.println("Goods Load      : 0");
-            System.out.println("Cargo Types     : None");
-            System.out.println("Safety Status   : SAFE");
-            System.out.println();
-            System.out.println("No bogies are currently attached to the train.");
+        System.out.println("Passenger bogie " + bogieId + " not found.");
+    }
+
+    // Check if bogie exists
+    public boolean checkBogieExists(String bogieId) {
+        for (PassengerBogie bogie : passengerBogies) {
+            if (bogie.getBogieId().equalsIgnoreCase(bogieId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Display all passenger bogies
+    public void displayPassengerBogies() {
+        if (passengerBogies.isEmpty()) {
+            System.out.println("No passenger bogies attached.");
+            return;
+        }
+
+        System.out.println("\nPassenger Bogies in Train:");
+        for (PassengerBogie bogie : passengerBogies) {
+            bogie.displayBogie();
+            System.out.println("--------------------------");
         }
     }
-    public class TrainConsistManagement {
-        public static void main(String[] args) {
-            // Initialize engine
-            Engine engine = new Engine("E-5001", "Diesel Engine");
-            // Initialize train with engine
-            Train train = new Train("TC101", engine);
-            // Display initial state of the train
-            train.displayConsistSummary();
+}
 
+public class TrainConsistManagement {
+    public static void main(String[] args) {
+        Train train = new Train();
+
+        // Adding passenger bogies
+        System.out.println("=== ADDING PASSENGER BOGIES ===");
+        train.addPassengerBogie(new PassengerBogie("S1", "Sleeper", 72));
+        train.addPassengerBogie(new PassengerBogie("A1", "AC Chair", 60));
+        train.addPassengerBogie(new PassengerBogie("F1", "First Class", 24));
+
+        // Display bogies after adding
+        train.displayPassengerBogies();
+
+        // Checking whether a bogie exists
+        System.out.println("\n=== CHECKING BOGIE EXISTENCE ===");
+        String searchId = "A1";
+        if (train.checkBogieExists(searchId)) {
+            System.out.println("Passenger bogie " + searchId + " exists in the train.");
+        } else {
+            System.out.println("Passenger bogie " + searchId + " does not exist in the train.");
+        }
+
+        // Removing a bogie
+        System.out.println("\n=== REMOVING A PASSENGER BOGIE ===");
+        train.removePassengerBogie("A1");
+
+        // Display bogies after removal
+        train.displayPassengerBogies();
+
+        // Check again after removal
+        System.out.println("\n=== CHECKING BOGIE EXISTENCE AFTER REMOVAL ===");
+        if (train.checkBogieExists(searchId)) {
+            System.out.println("Passenger bogie " + searchId + " exists in the train.");
+        } else {
+            System.out.println("Passenger bogie " + searchId + " does not exist in the train.");
+        }
     }
 }
