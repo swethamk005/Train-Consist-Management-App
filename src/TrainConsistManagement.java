@@ -1,43 +1,44 @@
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TrainConsistManagement {
     public static void main(String[] args) {
-        // LinkedHashSet stores unique bogie IDs in insertion order
-        Set<String> bogieIds = new LinkedHashSet<>();
+        // HashMap to store bogie ID and its capacity
+        Map<String, Integer> bogieCapacityMap = new HashMap<>();
 
-        // Adding bogie IDs
-        System.out.println("=== ADDING BOGIE IDS ===");
-        addBogieId(bogieIds, "BG101");
-        addBogieId(bogieIds, "BG103");
-        addBogieId(bogieIds, "BG102");
-        addBogieId(bogieIds, "BG105");
+        // Adding bogies with capacities
+        System.out.println("=== ADDING BOGIES WITH CAPACITY ===");
+        addBogie(bogieCapacityMap, "BG101", 72);   // Sleeper
+        addBogie(bogieCapacityMap, "BG102", 60);   // AC Chair
+        addBogie(bogieCapacityMap, "BG103", 24);   // First Class
 
-        // Attempting to add duplicate bogie ID
-        System.out.println("\n=== ADDING DUPLICATE BOGIE ID ===");
-        addBogieId(bogieIds, "BG103");
+        // Display all bogie-capacity mappings
+        System.out.println("\n=== BOGIE CAPACITY DETAILS ===");
+        displayBogieCapacities(bogieCapacityMap);
 
-        // Display bogie IDs in insertion order
-        System.out.println("\n=== BOGIE IDS IN INSERTION ORDER ===");
-        displayBogieIds(bogieIds);
-    }
-
-    // Method to add bogie ID only if it is unique
-    public static void addBogieId(Set<String> bogieIds, String bogieId) {
-        if (bogieIds.add(bogieId)) {
-            System.out.println("Bogie ID " + bogieId + " added successfully.");
+        // Lookup capacity of a specific bogie
+        System.out.println("\n=== CHECKING CAPACITY OF A SPECIFIC BOGIE ===");
+        String searchId = "BG102";
+        if (bogieCapacityMap.containsKey(searchId)) {
+            System.out.println("Bogie ID " + searchId + " has capacity: " + bogieCapacityMap.get(searchId));
         } else {
-            System.out.println("Duplicate Bogie ID " + bogieId + " is not allowed.");
+            System.out.println("Bogie ID " + searchId + " not found.");
         }
     }
 
-    // Method to display all bogie IDs in insertion order
-    public static void displayBogieIds(Set<String> bogieIds) {
-        if (bogieIds.isEmpty()) {
-            System.out.println("No bogie IDs found.");
+    // Method to add bogie ID and capacity
+    public static void addBogie(Map<String, Integer> bogieCapacityMap, String bogieId, int capacity) {
+        bogieCapacityMap.put(bogieId, capacity);
+        System.out.println("Bogie ID " + bogieId + " with capacity " + capacity + " added successfully.");
+    }
+
+    // Method to display all bogie-capacity mappings
+    public static void displayBogieCapacities(Map<String, Integer> bogieCapacityMap) {
+        if (bogieCapacityMap.isEmpty()) {
+            System.out.println("No bogie capacity data found.");
         } else {
-            for (String id : bogieIds) {
-                System.out.println(id);
+            for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
+                System.out.println("Bogie ID: " + entry.getKey() + " | Capacity: " + entry.getValue());
             }
         }
     }
