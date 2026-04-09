@@ -1,67 +1,73 @@
 import java.util.ArrayList;
 import java.util.List;
 
-@FunctionalInterface
-interface SafetyRule {
-    boolean isSafe(GoodsBogie bogie);
-}
-
-class GoodsBogie {
+class PassengerBogie {
     private String bogieId;
-    private String bogieShape;
-    private String cargoType;
+    private String bogieType;
+    private int seatCapacity;
 
-    public GoodsBogie(String bogieId, String bogieShape, String cargoType) {
+    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
         this.bogieId = bogieId;
-        this.bogieShape = bogieShape;
-        this.cargoType = cargoType;
+        this.bogieType = bogieType;
+        this.seatCapacity = seatCapacity;
     }
 
     public String getBogieId() {
         return bogieId;
     }
 
-    public String getBogieShape() {
-        return bogieShape;
+    public String getBogieType() {
+        return bogieType;
     }
 
-    public String getCargoType() {
-        return cargoType;
-    }
-
-    public void displayBogie() {
-        System.out.println("Bogie ID    : " + bogieId);
-        System.out.println("Bogie Shape : " + bogieShape);
-        System.out.println("Cargo Type  : " + cargoType);
+    public int getSeatCapacity() {
+        return seatCapacity;
     }
 }
 
 public class TrainConsistManagement {
     public static void main(String[] args) {
-        // Create a list of goods bogies
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
+        // Create a large list of passenger bogies
+        List<PassengerBogie> bogies = new ArrayList<>();
 
-        // Add goods bogies
-        goodsBogies.add(new GoodsBogie("GB101", "Cylindrical", "Petroleum"));
-        goodsBogies.add(new GoodsBogie("GB102", "Rectangular", "Coal"));
-        goodsBogies.add(new GoodsBogie("GB103", "Cylindrical", "Coal"));      // Unsafe
-        goodsBogies.add(new GoodsBogie("GB104", "Rectangular", "Cement"));
+        for (int i = 1; i <= 100000; i++) {
+            bogies.add(new PassengerBogie("BG" + i, "Sleeper", (i % 100) + 20));
+        }
 
-        // Functional interface implemented using lambda expression
-        SafetyRule safetyCheck = bogie -> {
-            if (bogie.getBogieShape().equalsIgnoreCase("Cylindrical")) {
-                return bogie.getCargoType().equalsIgnoreCase("Petroleum");
+        // -------------------------------
+        // Loop-based filtering performance
+        // -------------------------------
+        long loopStart = System.nanoTime();
+
+        List<PassengerBogie> loopFiltered = new ArrayList<>();
+        for (PassengerBogie bogie : bogies) {
+            if (bogie.getSeatCapacity() >= 60) {
+                loopFiltered.add(bogie);
             }
-            return true; // Rectangular bogies are safe for general cargo
-        };
+        }
 
-        // Display safety compliance results
-        System.out.println("=== GOODS BOGIE SAFETY COMPLIANCE CHECK ===");
+        long loopEnd = System.nanoTime();
+        long loopTime = loopEnd - loopStart;
 
-        goodsBogies.stream().forEach(bogie -> {
-            bogie.displayBogie();
-            System.out.println("Safety Status: " + (safetyCheck.isSafe(bogie) ? "SAFE" : "UNSAFE"));
-            System.out.println("--------------------------");
-        });
+        // -------------------------------
+        // Stream-based filtering performance
+        // -------------------------------
+        long streamStart = System.nanoTime();
+
+        List<PassengerBogie> streamFiltered = bogies.stream()
+                .filter(bogie -> bogie.getSeatCapacity() >= 60)
+                .toList();
+
+        long streamEnd = System.nanoTime();
+        long streamTime = streamEnd - streamStart;
+
+        // Display results
+        System.out.println("=== PERFORMANCE COMPARISON: LOOP VS STREAM ===");
+        System.out.println("Loop-based filtering time   : " + loopTime + " ns");
+        System.out.println("Stream-based filtering time : " + streamTime + " ns");
+
+        System.out.println("\n=== FILTER RESULT CHECK ===");
+        System.out.println("Loop filtered bogies count   : " + loopFiltered.size());
+        System.out.println("Stream filtered bogies count : " + streamFiltered.size());
     }
 }
