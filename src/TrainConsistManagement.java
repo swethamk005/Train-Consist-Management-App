@@ -1,6 +1,6 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class PassengerBogie {
     private String bogieId;
@@ -32,18 +32,10 @@ class PassengerBogie {
     }
 }
 
-// Custom Comparator to sort bogies by seating capacity
-class CapacityComparator implements Comparator<PassengerBogie> {
-    @Override
-    public int compare(PassengerBogie b1, PassengerBogie b2) {
-        return Integer.compare(b1.getSeatCapacity(), b2.getSeatCapacity());
-    }
-}
-
 public class TrainConsistManagement {
     public static void main(String[] args) {
         // Create a list of passenger bogies
-        ArrayList<PassengerBogie> bogies = new ArrayList<>();
+        List<PassengerBogie> bogies = new ArrayList<>();
 
         // Add passenger bogies
         bogies.add(new PassengerBogie("BG101", "Sleeper", 72));
@@ -51,20 +43,27 @@ public class TrainConsistManagement {
         bogies.add(new PassengerBogie("BG103", "First Class", 24));
         bogies.add(new PassengerBogie("BG104", "Second Sitting", 90));
 
-        // Display before sorting
-        System.out.println("=== PASSENGER BOGIES BEFORE SORTING ===");
+        // Display all bogies
+        System.out.println("=== ALL PASSENGER BOGIES ===");
         displayBogies(bogies);
 
-        // Sort bogies using custom Comparator
-        Collections.sort(bogies, new CapacityComparator());
+        // Filter bogies with seating capacity greater than or equal to 60
+        List<PassengerBogie> highCapacityBogies = bogies.stream()
+                .filter(bogie -> bogie.getSeatCapacity() >= 60)
+                .collect(Collectors.toList());
 
-        // Display after sorting
-        System.out.println("\n=== PASSENGER BOGIES SORTED BY SEATING CAPACITY ===");
-        displayBogies(bogies);
+        // Display filtered bogies
+        System.out.println("\n=== FILTERED PASSENGER BOGIES (CAPACITY >= 60) ===");
+        displayBogies(highCapacityBogies);
     }
 
     // Method to display bogie details
-    public static void displayBogies(ArrayList<PassengerBogie> bogies) {
+    public static void displayBogies(List<PassengerBogie> bogies) {
+        if (bogies.isEmpty()) {
+            System.out.println("No bogies found.");
+            return;
+        }
+
         for (PassengerBogie bogie : bogies) {
             bogie.displayBogie();
             System.out.println("--------------------------");
